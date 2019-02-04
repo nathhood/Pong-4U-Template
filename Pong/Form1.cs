@@ -144,8 +144,12 @@ namespace Pong
             p2.Y = this.Height / 2 - p2.Height / 2;
 
             // TODO set Width and Height of ball
+            ball.Width = ball.Height = 10;
             // TODO set starting X position for ball to middle of screen, (use this.Width and ball.Width)
+            ball.X = this.Width / 2 - ball.Width / 2;
+
             // TODO set starting Y position for ball to middle of screen, (use this.Height and ball.Height)
+            ball.Y = this.Height / 2 - ball.Height / 2;
 
         }
 
@@ -160,7 +164,7 @@ namespace Pong
             // TODO create code to move ball either left or right based on ballMoveRight and using BALL_SPEED
 
             // TODO create code move ball either down or up based on ballMoveDown and using BALL_SPEED
-
+            
             #endregion
 
             #region update paddle positions
@@ -168,10 +172,15 @@ namespace Pong
             if (aKeyDown == true && p1.Y > 0)
             {
                 // TODO create code to move player 1 paddle up using p1.Y and PADDLE_SPEED
+                p1.Y -= PADDLE_SPEED;
             }
 
             // TODO create an if statement and code to move player 1 paddle down using p1.Y and PADDLE_SPEED
-
+            if (zKeyDown == true && p1.Y < this.Height-p1.Height)
+            {
+                // TODO create code to move player 1 paddle up using p1.Y and PADDLE_SPEED
+                p1.Y += PADDLE_SPEED;
+            }
             // TODO create an if statement and code to move player 2 paddle up using p2.Y and PADDLE_SPEED
 
             // TODO create an if statement and code to move player 2 paddle down using p2.Y and PADDLE_SPEED
@@ -247,10 +256,11 @@ namespace Pong
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            // TODO draw paddles using FillRectangle
-
-            // TODO draw ball using FillRectangle
-
+            // draw paddles using FillRectangle
+            e.Graphics.FillRectangle(drawBrush, p1);
+            e.Graphics.FillRectangle(drawBrush, p2);
+            // draw ball using FillRectangle
+            e.Graphics.FillEllipse(drawBrush, ball);
             // TODO draw scores to the screen using DrawString
         }
 
