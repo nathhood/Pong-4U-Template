@@ -229,7 +229,7 @@ namespace Pong
             #region ball collision with paddles
 
             // TODO create if statment that checks p1 collides with ball and if it does
-
+            if ()
                  // --- play a "paddle hit" sound and
                  // --- use ballMoveRight boolean to change direction
 
