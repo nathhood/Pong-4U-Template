@@ -27,7 +27,7 @@ namespace Pong
 
         //graphics objects for drawing
         SolidBrush drawBrush = new SolidBrush(Color.White);
-        Font drawFont = new Font("Courier New", 10);
+        Font drawFont = new Font("Courier New", 50);
 
         // Sounds for game
         SoundPlayer scoreSound = new SoundPlayer(Properties.Resources.score);
@@ -42,11 +42,11 @@ namespace Pong
         //ball directions, speed, and rectangle
         Boolean ballMoveRight = true;
         Boolean ballMoveDown = true;
-        const int BALL_SPEED = 4;
+        int BALL_SPEED = 4;
         Rectangle ball;
 
         //paddle speeds and rectangles
-        const int PADDLE_SPEED = 4;
+        int PADDLE_SPEED = 4;
         Rectangle p1, p2;
 
         //player and game scores
@@ -123,14 +123,16 @@ namespace Pong
         {
             if (newGameOk)
             {
+                
                 player1Score = player2Score = 0;
                 newGameOk = false;
                 startLabel.Visible = false;
                 gameUpdateLoop.Start();
             }
-
+            PADDLE_SPEED = BALL_SPEED = 4;
             //set starting position for paddles on new game and point scored 
             const int PADDLE_EDGE = 20;  // buffer distance between screen edge and paddle            
+
 
             p1.Width = p2.Width = 10;    //height for both paddles set the same
             p1.Height = p2.Height = 40;  //width for both paddles set the same
@@ -159,6 +161,7 @@ namespace Pong
         /// </summary>
         private void gameUpdateLoop_Tick(object sender, EventArgs e)
         {
+
             #region update ball position
 
             // create code to move ball either left or right based on ballMoveRight and using BALL_SPEED
@@ -229,13 +232,27 @@ namespace Pong
             #region ball collision with paddles
 
             // TODO create if statment that checks p1 collides with ball and if it does
-            if ()
-                 // --- play a "paddle hit" sound and
-                 // --- use ballMoveRight boolean to change direction
+            if (ball.IntersectsWith(p1))
+            {
+                // --- play a "paddle hit" sound and
+                BALL_SPEED += 1;
+                PADDLE_SPEED += 1;
+                // --- use ballMoveRight boolean to change direction
+                ballMoveRight = true; 
+            }
+                 
+                 
 
             // TODO create if statment that checks p2 collides with ball and if it does
+            if (ball.IntersectsWith(p2))
+            {
                 // --- play a "paddle hit" sound and
+                BALL_SPEED += 1;
+                PADDLE_SPEED += 1;
                 // --- use ballMoveRight boolean to change direction
+                ballMoveRight = false;
+            }
+
             
             /*  ENRICHMENT
              *  Instead of using two if statments as noted above see if you can create one
@@ -246,18 +263,27 @@ namespace Pong
 
             #region ball collision with side walls (point scored)
 
-            if (ball.X < 0)  // ball hits left wall logic
+            if (ball.X <= 0)  // ball hits left wall logic
             {
                 // TODO
                 // --- play score sound
                 // --- update player 2 score
+                player2Score += 1;
 
                 // TODO use if statement to check to see if player 2 has won the game. If true run 
                 // GameOver method. Else change direction of ball and call SetParameters method.
+                SetParameters();
+                ballMoveRight = !ballMoveRight;
 
             }
 
             // TODO same as above but this time check for collision with the right wall
+            if (ball.X >= this.Width - ball.Width)
+            {
+                player1Score += 1;
+                SetParameters();
+                ballMoveRight = !ballMoveRight;
+            }
 
             #endregion
             
@@ -289,7 +315,11 @@ namespace Pong
             e.Graphics.FillRectangle(drawBrush, p2);
             // draw ball using FillRectangle
             e.Graphics.FillEllipse(drawBrush, ball);
+
             // TODO draw scores to the screen using DrawString
+
+            e.Graphics.DrawString("" + player1Score, drawFont, drawBrush, 50, 40);
+            e.Graphics.DrawString("" + player2Score, drawFont, drawBrush, this.Width - 120, 40);
         }
 
     }
