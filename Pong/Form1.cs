@@ -33,6 +33,11 @@ namespace Pong
         SoundPlayer scoreSound = new SoundPlayer(Properties.Resources.score);
         SoundPlayer collisionSound = new SoundPlayer(Properties.Resources.collision);
 
+        //create random number gen
+        Random randGen = new Random();
+        int ballRandomRight;
+        int ballRandomDown;
+
         //determines whether a key is being pressed or not
         Boolean aKeyDown, zKeyDown, jKeyDown, mKeyDown;
 
@@ -52,7 +57,7 @@ namespace Pong
         //player and game scores
         int player1Score = 0;
         int player2Score = 0;
-        int gameWinScore = 2;  // number of points needed to win game
+        int gameWinScore = 3;  // number of points needed to win game
 
         #endregion
 
@@ -123,7 +128,22 @@ namespace Pong
         {
             if (newGameOk)
             {
-                
+                ballRandomRight = randGen.Next(1, 3);
+                ballRandomDown = randGen.Next(1, 3);
+                if (ballRandomRight == 1)
+                {
+                    ballMoveRight = false;
+                }
+
+                else
+                {
+                    ballMoveRight = true;
+                }
+
+                if (ballRandomDown == 1)
+                {
+                    ballMoveDown = false;
+                }
                 player1Score = player2Score = 0;
                 newGameOk = false;
                 startLabel.Visible = false;
@@ -153,6 +173,7 @@ namespace Pong
             // set starting Y position for ball to middle of screen, (use this.Height and ball.Height)
             ball.Y = this.Height / 2 - ball.Height / 2;
 
+            
         }
 
         /// <summary>
@@ -265,30 +286,102 @@ namespace Pong
 
             if (ball.X <= 0)  // ball hits left wall logic
             {
+
                 // TODO
                 // --- play score sound
+                scoreSound.Play();
                 // --- update player 2 score
                 player2Score += 1;
 
                 // TODO use if statement to check to see if player 2 has won the game. If true run 
+                if (player2Score == gameWinScore)
+                {
+                    GameOver("Player 2");
+                }
                 // GameOver method. Else change direction of ball and call SetParameters method.
+                else
+                {
+                
                 SetParameters();
-                ballMoveRight = !ballMoveRight;
+                    ballRandomRight = randGen.Next(1, 3);
+                    ballRandomDown = randGen.Next(1, 3);
+                    if (ballRandomRight == 1)
+                    {
+                        ballMoveRight = false;
+                    }
+
+                    else
+                    {
+                        ballMoveRight = true;
+                    }
+
+                    if (ballRandomDown == 1)
+                    {
+                        ballMoveDown = false;
+                    }
+
+                    else
+                    {
+                        ballMoveDown = true;
+                    }
+                    //ballMoveRight = !ballMoveRight;
+                this.Refresh();
+                Thread.Sleep(1000);
+                }
+                
 
             }
 
             // TODO same as above but this time check for collision with the right wall
             if (ball.X >= this.Width - ball.Width)
             {
+                // --- play score sound
+                scoreSound.Play();
+
+                // --- update player 1 score
                 player1Score += 1;
-                SetParameters();
-                ballMoveRight = !ballMoveRight;
+
+                // TODO use if statement to check to see if player 2 has won the game. If true run 
+                if (player1Score == gameWinScore)
+                {
+                    GameOver("Player 1");
+                }
+
+                else
+                {
+                    SetParameters();
+                    ballRandomRight = randGen.Next(1, 3);
+                    ballRandomDown = randGen.Next(1, 3);
+                    if (ballRandomRight == 1)
+                    {
+                        ballMoveRight = false;
+                    }
+
+                    else
+                    {
+                        ballMoveRight = true;
+                    }
+
+                    if (ballRandomDown == 1)
+                    {
+                        ballMoveDown = false;
+                    }
+
+                    else
+                    {
+                        ballMoveDown = true;
+                    }
+                    //ballMoveRight = !ballMoveRight;
+                    this.Refresh();
+                    Thread.Sleep(1000);
+                }
             }
 
             #endregion
             
             //refresh the screen, which causes the Form1_Paint method to run
             this.Refresh();
+            
         }
         
         /// <summary>
@@ -300,12 +393,18 @@ namespace Pong
         {
             newGameOk = true;
 
+            startLabel.Visible = true;
             // TODO create game over logic
             // --- stop the gameUpdateLoop
+            gameUpdateLoop.Stop();
             // --- show a message on the startLabel to indicate a winner, (need to Refresh).
-            // --- pause for two seconds 
+            startLabel.Text = winner+" is the winner";
+            this.Refresh();
+            // --- pause for two seconds
+            Thread.Sleep(2000);
             // --- use the startLabel to ask the user if they want to play again
-
+            startLabel.Text = "Do you want to play again?";
+            this.Refresh();
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
