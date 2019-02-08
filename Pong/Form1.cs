@@ -128,6 +128,7 @@ namespace Pong
         {
             if (newGameOk)
             {
+                this.BackColor = Color.Black;
                 ballRandomRight = randGen.Next(1, 3);
                 ballRandomDown = randGen.Next(1, 3);
                 if (ballRandomRight == 1)
@@ -150,6 +151,8 @@ namespace Pong
                 gameUpdateLoop.Start();
             }
             PADDLE_SPEED = BALL_SPEED = 4;
+
+            this.BackColor = Color.Black;
             //set starting position for paddles on new game and point scored 
             const int PADDLE_EDGE = 20;  // buffer distance between screen edge and paddle            
 
@@ -238,13 +241,17 @@ namespace Pong
             {
                 // use ballMoveDown boolean to change direction
                 ballMoveDown = true;
-                // TODO play a collision sound
+                // play a collision sound
+                collisionSound.Play();
             }
             // In an else if statement use ball.Y, this.Height, and ball.Width to check for collision with bottom line
             else if (ball.Y >= this.Height-ball.Width)
             {
                 // If true use ballMoveDown down boolean to change direction
                 ballMoveDown = false;
+
+                // play a collision sound
+                collisionSound.Play();
             }
             
 
@@ -256,10 +263,12 @@ namespace Pong
             if (ball.IntersectsWith(p1))
             {
                 // --- play a "paddle hit" sound and
+                collisionSound.Play();
                 BALL_SPEED += 1;
                 PADDLE_SPEED += 1;
                 // --- use ballMoveRight boolean to change direction
-                ballMoveRight = true; 
+                ballMoveRight = true;
+                this.BackColor = Color.Blue;
             }
                  
                  
@@ -267,7 +276,9 @@ namespace Pong
             // TODO create if statment that checks p2 collides with ball and if it does
             if (ball.IntersectsWith(p2))
             {
+                this.BackColor = Color.Red;
                 // --- play a "paddle hit" sound and
+                collisionSound.Play();
                 BALL_SPEED += 1;
                 PADDLE_SPEED += 1;
                 // --- use ballMoveRight boolean to change direction
@@ -403,7 +414,7 @@ namespace Pong
             // --- pause for two seconds
             Thread.Sleep(2000);
             // --- use the startLabel to ask the user if they want to play again
-            startLabel.Text = "Do you want to play again?";
+            startLabel.Text = "Do you want to play again? Press SPACE to do so";
             this.Refresh();
         }
 
@@ -416,9 +427,11 @@ namespace Pong
             e.Graphics.FillEllipse(drawBrush, ball);
 
             // TODO draw scores to the screen using DrawString
-
-            e.Graphics.DrawString("" + player1Score, drawFont, drawBrush, 50, 40);
-            e.Graphics.DrawString("" + player2Score, drawFont, drawBrush, this.Width - 120, 40);
+            if (newGameOk == false)
+            {
+                e.Graphics.DrawString("" + player1Score, drawFont, drawBrush, 50, 40);
+                e.Graphics.DrawString("" + player2Score, drawFont, drawBrush, this.Width - 120, 40);
+            }
         }
 
     }
