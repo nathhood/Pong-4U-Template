@@ -37,6 +37,7 @@ namespace Pong
         Random randGen = new Random();
         int ballRandomRight;
         int ballRandomDown;
+        int intersectCount;
 
         //determines whether a key is being pressed or not
         Boolean aKeyDown, zKeyDown, jKeyDown, mKeyDown;
@@ -131,6 +132,7 @@ namespace Pong
                 this.BackColor = Color.Black;
                 ballRandomRight = randGen.Next(1, 3);
                 ballRandomDown = randGen.Next(1, 3);
+                intersectCount = 0;
                 if (ballRandomRight == 1)
                 {
                     ballMoveRight = false;
@@ -151,7 +153,7 @@ namespace Pong
                 gameUpdateLoop.Start();
             }
             PADDLE_SPEED = BALL_SPEED = 4;
-
+            intersectCount = 0;
             this.BackColor = Color.Black;
             //set starting position for paddles on new game and point scored 
             const int PADDLE_EDGE = 20;  // buffer distance between screen edge and paddle            
@@ -262,10 +264,11 @@ namespace Pong
             // TODO create if statment that checks p1 collides with ball and if it does
             if (ball.IntersectsWith(p1))
             {
+                intersectCount ++; // add one to player intersect counter
                 // --- play a "paddle hit" sound and
                 collisionSound.Play();
-                BALL_SPEED += 1;
-                PADDLE_SPEED += 1;
+                //BALL_SPEED += 1;
+                //PADDLE_SPEED += 1;
                 // --- use ballMoveRight boolean to change direction
                 ballMoveRight = true;
                 this.BackColor = Color.Blue;
@@ -276,11 +279,12 @@ namespace Pong
             // TODO create if statment that checks p2 collides with ball and if it does
             if (ball.IntersectsWith(p2))
             {
+                intersectCount++; // add one to player intersect counter
                 this.BackColor = Color.Red;
                 // --- play a "paddle hit" sound and
                 collisionSound.Play();
-                BALL_SPEED += 1;
-                PADDLE_SPEED += 1;
+                //BALL_SPEED += 1;
+                //PADDLE_SPEED += 1;
                 // --- use ballMoveRight boolean to change direction
                 ballMoveRight = false;
             }
@@ -405,7 +409,7 @@ namespace Pong
             newGameOk = true;
 
             startLabel.Visible = true;
-            // TODO create game over logic
+            // create game over logic
             // --- stop the gameUpdateLoop
             gameUpdateLoop.Stop();
             // --- show a message on the startLabel to indicate a winner, (need to Refresh).
@@ -420,6 +424,8 @@ namespace Pong
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+            if (newGameOk == false)
+            {
             // draw paddles using FillRectangle
             e.Graphics.FillRectangle(drawBrush, p1);
             e.Graphics.FillRectangle(drawBrush, p2);
@@ -427,8 +433,7 @@ namespace Pong
             e.Graphics.FillEllipse(drawBrush, ball);
 
             // TODO draw scores to the screen using DrawString
-            if (newGameOk == false)
-            {
+            
                 e.Graphics.DrawString("" + player1Score, drawFont, drawBrush, 50, 40);
                 e.Graphics.DrawString("" + player2Score, drawFont, drawBrush, this.Width - 120, 40);
             }
