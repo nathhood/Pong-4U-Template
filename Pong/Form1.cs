@@ -133,7 +133,7 @@ namespace Pong
                 this.BackColor = Color.Black;
                 ballRandomRight = randGen.Next(1, 3);
                 ballRandomDown = randGen.Next(1, 3);
-                intersectCount = 0;
+                intersectCount = 0; //used to count number of paddle intersects
                 if (ballRandomRight == 1)
                 {
                     ballMoveRight = false;
@@ -268,7 +268,7 @@ namespace Pong
             if (ball.IntersectsWith(p1))
             {
                 intersectCount++; // add one to player intersect counter
-                // --- play a "paddle hit" sound and
+                // --- play a "paddle hit" sound
                 collisionSound.Play();
                 //ballSpeed += 1;
                 //paddleSpeed += 1;
@@ -276,27 +276,28 @@ namespace Pong
                 ballMoveRight = true;
                 //this.BackColor = Color.Blue; //Change background colour of form
 
-                if (intersectCount < 8)
+                //change colour and difficulty based on number of paddle hits
+                if (intersectCount < 8) //easy mode, no changes
                 {
                     ballSpeed = 4;
                     this.BackColor = Color.ForestGreen;
                 }
 
-                if (intersectCount >= 8)
+                if (intersectCount >= 8) //medium mode, make paddles smaller
                 {
                     p1.Height = p2.Height = 50;
                     ballSpeed = 4;
                     this.BackColor = Color.DarkOrange;
                 }
 
-                if (intersectCount >= 15)
+                if (intersectCount >= 15) //hard mode, make them smaller again
                 {
                     p1.Height = p2.Height = 40;
                     ballSpeed = 4;
                     this.BackColor = Color.Red;
                 }
 
-                if (intersectCount == 20)
+                if (intersectCount == 20) //insane mode starts
                 {
                     p1.Height = p2.Height = 40;
                     ballSpeed = 6;
@@ -304,7 +305,7 @@ namespace Pong
                     this.BackColor = Color.MediumPurple;
                 }
 
-                if (intersectCount > 20)
+                if (intersectCount > 20) //insane mode continues and speeds up ball speed and paddle speed with each paddle hit
                 {
                     p1.Height = p2.Height = 40;
                     ballSpeed++;
@@ -312,7 +313,7 @@ namespace Pong
                     this.BackColor = Color.MediumPurple;
                 }
 
-                if (intersectCount % 3 == 0 && intersectCount < 20)
+                if (intersectCount % 5 == 0 && intersectCount < 20) //power hit every five hits to make sure both players get to use it, but not in insane mode since it is already insane.
                 {
                     ballSpeed = 2 * ballSpeed;
                 }
@@ -320,11 +321,11 @@ namespace Pong
 
 
 
-            // TODO create if statment that checks p2 collides with ball and if it does
+            // create if statment that checks p2 collides with ball and if it does
             if (ball.IntersectsWith(p2))
             {
                 intersectCount++; // add one to player intersect counter
-                // --- play a "paddle hit" sound and
+                // --- play a "paddle hit" sound
                 collisionSound.Play();
                 //ballSpeed += 1;
                 //paddleSpeed += 1;
@@ -332,27 +333,27 @@ namespace Pong
                 ballMoveRight = false;
                 this.BackColor = Color.Red; //change background colour of form
 
-                if (intersectCount < 8)
+                if (intersectCount < 8) //easy mode, no changes
                 {
                     ballSpeed = 4;
                     this.BackColor = Color.ForestGreen;
                 }
 
-                if (intersectCount >= 8)
+                if (intersectCount >= 8) //medium mode, make paddles smaller
                 {
                     p1.Height = p2.Height = 50;
                     ballSpeed = 4;
                     this.BackColor = Color.DarkOrange;
                 }
 
-                if (intersectCount >= 15)
+                if (intersectCount >= 15) //hard mode, make them smaller again
                 {
                     p1.Height = p2.Height = 40;
                     ballSpeed = 4;
                     this.BackColor = Color.Red;
                 }
 
-                if (intersectCount == 20)
+                if (intersectCount == 20) //insane mode starts
                 {
                     p1.Height = p2.Height = 40;
                     ballSpeed = 6;
@@ -360,7 +361,7 @@ namespace Pong
                     this.BackColor = Color.MediumPurple;
                 }
 
-                if (intersectCount > 20)
+                if (intersectCount > 20) //insane mode continues and speeds up ball speed and paddle speed with each paddle hit
                 {
                     p1.Height = p2.Height = 40;
                     ballSpeed ++;
@@ -368,7 +369,7 @@ namespace Pong
                     this.BackColor = Color.MediumPurple;
                 }
 
-                if (intersectCount % 3 == 0 && intersectCount < 20)
+                if (intersectCount % 3 == 0 && intersectCount < 20) //power hit every five hits to make sure both players get to use it, but not in insane mode since it is already insane.
                 {
                     ballSpeed = 2 * ballSpeed;
                 }
@@ -387,13 +388,13 @@ namespace Pong
             if (ball.X <= 0)  // ball hits left wall logic
             {
 
-                // TODO
+                
                 // --- play score sound
                 scoreSound.Play();
                 // --- update player 2 score
                 player2Score += 1;
 
-                // TODO use if statement to check to see if player 2 has won the game. If true run 
+                // use if statement to check to see if player 2 has won the game. If true run 
                 if (player2Score == gameWinScore)
                 {
                     GameOver("Player 2");
@@ -432,7 +433,7 @@ namespace Pong
 
             }
 
-            // TODO same as above but this time check for collision with the right wall
+            // same as above but this time check for collision with the right wall
             if (ball.X >= this.Width - ball.Width)
             {
                 // --- play score sound
@@ -441,7 +442,7 @@ namespace Pong
                 // --- update player 1 score
                 player1Score += 1;
 
-                // TODO use if statement to check to see if player 2 has won the game. If true run 
+                // use if statement to check to see if player 2 has won the game. If true run 
                 if (player1Score == gameWinScore)
                 {
                     GameOver("Player 1");
@@ -521,8 +522,11 @@ namespace Pong
 
                 e.Graphics.DrawString("" + player1Score, drawFont, drawBrush, 50, 40);
                 e.Graphics.DrawString("" + player2Score, drawFont, drawBrush, this.Width - 120, 40);
+
+                //draw rally number
                 e.Graphics.DrawString("Rally: " + intersectCount + " Hits", drawFontSmall, drawBrush, 190, 40);
 
+                // if statements to draw the mode levels based on number of hits
                 if (intersectCount < 8)
                 {
                     e.Graphics.DrawString("Mode: EASY", drawFontSmall, drawBrush, 215, 70);
